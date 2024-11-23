@@ -4,6 +4,12 @@ import {AppBskyActorDefs, AppBskyGraphDefs} from '@atproto/api'
 
 import {useNonReactiveCallback} from '#/lib/hooks/useNonReactiveCallback'
 
+export interface EditProfileModal {
+  name: 'edit-profile'
+  profile: AppBskyActorDefs.ProfileViewDetailed
+  onUpdate?: () => void
+}
+
 export interface CreateOrEditListModal {
   name: 'create-or-edit-list'
   purpose?: string
@@ -42,21 +48,12 @@ export interface DeleteAccountModal {
   name: 'delete-account'
 }
 
-export interface ChangeHandleModal {
-  name: 'change-handle'
-  onChanged: () => void
-}
-
 export interface WaitlistModal {
   name: 'waitlist'
 }
 
 export interface InviteCodesModal {
   name: 'invite-codes'
-}
-
-export interface AddAppPasswordModal {
-  name: 'add-app-password'
 }
 
 export interface ContentLanguagesSettingsModal {
@@ -95,12 +92,13 @@ export interface InAppBrowserConsentModal {
 
 export type Modal =
   // Account
-  | AddAppPasswordModal
-  | ChangeHandleModal
   | DeleteAccountModal
   | VerifyEmailModal
   | ChangeEmailModal
   | ChangePasswordModal
+
+  // Temp
+  | EditProfileModal
 
   // Curation
   | ContentLanguagesSettingsModal

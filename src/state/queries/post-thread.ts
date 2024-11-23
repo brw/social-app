@@ -11,13 +11,13 @@ import {
 import {QueryClient, useQuery, useQueryClient} from '@tanstack/react-query'
 
 import {moderatePost_wrapped as moderatePost} from '#/lib/moderatePost_wrapped'
+import {findAllPostsInQueryData as findAllPostsInQuoteQueryData} from '#/state/queries/post-quotes'
 import {UsePreferencesQueryResponse} from '#/state/queries/preferences/types'
-import {useAgent} from '#/state/session'
-import {findAllPostsInQueryData as findAllPostsInQuoteQueryData} from 'state/queries/post-quotes'
 import {
   findAllPostsInQueryData as findAllPostsInSearchQueryData,
   findAllProfilesInQueryData as findAllProfilesInSearchQueryData,
-} from 'state/queries/search-posts'
+} from '#/state/queries/search-posts'
+import {useAgent} from '#/state/session'
 import {
   findAllPostsInQueryData as findAllPostsInNotifsQueryData,
   findAllProfilesInQueryData as findAllProfilesInNotifsQueryData,
@@ -216,6 +216,17 @@ export function sortThread(
         }
       }
 
+      const aPin = Boolean(a.record.text.trim() === '📌')
+      const bPin = Boolean(b.record.text.trim() === '📌')
+      if (aPin !== bPin) {
+        if (aPin) {
+          return 1
+        }
+        if (bPin) {
+          return -1
+        }
+      }
+
       if (opts.prioritizeFollowedUsers) {
         const af = a.post.author.viewer?.following
         const bf = b.post.author.viewer?.following
@@ -226,7 +237,11 @@ export function sortThread(
         }
       }
 
-      if (opts.sort === 'oldest') {
+      if (opts.sort === 'hotness') {
+        const aHotness = getHotness(a.post)
+        const bHotness = getHotness(b.post)
+        return bHotness - aHotness
+      } else if (opts.sort === 'oldest') {
         return a.post.indexedAt.localeCompare(b.post.indexedAt)
       } else if (opts.sort === 'newest') {
         return b.post.indexedAt.localeCompare(a.post.indexedAt)
@@ -257,6 +272,21 @@ export function sortThread(
 
 // internal methods
 // =
+
+// Inspired by https://join-lemmy.org/docs/contributors/07-ranking-algo.html
+// We want to give recent comments a real chance (and not bury them deep below the fold)
+// while also surfacing well-liked comments from the past. In the future, we can explore
+// something more sophisticated, but we don't have much data on the client right now.
+function getHotness(post: AppBskyFeedDefs.PostView) {
+  const hoursAgo =
+    (new Date().getTime() - new Date(post.indexedAt).getTime()) /
+    (1000 * 60 * 60)
+  const likeCount = post.likeCount ?? 0
+  const likeOrder = Math.log(3 + likeCount)
+  const timePenaltyExponent = 1.5 + 1.5 / (1 + Math.log(1 + likeCount))
+  const timePenalty = Math.pow(hoursAgo + 2, timePenaltyExponent)
+  return likeOrder / timePenalty
+}
 
 function responseToThreadNodes(
   node: ThreadViewNode,

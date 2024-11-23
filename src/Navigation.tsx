@@ -32,7 +32,7 @@ import {
 import {RouteParams, State} from '#/lib/routes/types'
 import {attachRouteToLogEvents, logEvent} from '#/lib/statsig/statsig'
 import {bskyTitle} from '#/lib/strings/headings'
-import {isAndroid, isNative, isWeb} from '#/platform/detection'
+import {isNative, isWeb} from '#/platform/detection'
 import {useModalControls} from '#/state/modals'
 import {useUnreadNotifications} from '#/state/queries/notifications/unread'
 import {useSession} from '#/state/session'
@@ -40,14 +40,11 @@ import {
   shouldRequestEmailConfirmation,
   snoozeEmailConfirmationPrompt,
 } from '#/state/shell/reminders'
-import {AccessibilitySettingsScreen} from '#/view/screens/AccessibilitySettings'
-import {AppPasswords} from '#/view/screens/AppPasswords'
 import {CommunityGuidelinesScreen} from '#/view/screens/CommunityGuidelines'
 import {CopyrightPolicyScreen} from '#/view/screens/CopyrightPolicy'
 import {DebugModScreen} from '#/view/screens/DebugMod'
 import {FeedsScreen} from '#/view/screens/Feeds'
 import {HomeScreen} from '#/view/screens/Home'
-import {LanguageSettingsScreen} from '#/view/screens/LanguageSettings'
 import {ListsScreen} from '#/view/screens/Lists'
 import {LogScreen} from '#/view/screens/Log'
 import {ModerationBlockedAccounts} from '#/view/screens/ModerationBlockedAccounts'
@@ -55,11 +52,7 @@ import {ModerationModlistsScreen} from '#/view/screens/ModerationModlists'
 import {ModerationMutedAccounts} from '#/view/screens/ModerationMutedAccounts'
 import {NotFoundScreen} from '#/view/screens/NotFound'
 import {NotificationsScreen} from '#/view/screens/Notifications'
-import {NotificationsSettingsScreen} from '#/view/screens/NotificationsSettings'
 import {PostThreadScreen} from '#/view/screens/PostThread'
-import {PreferencesExternalEmbeds} from '#/view/screens/PreferencesExternalEmbeds'
-import {PreferencesFollowingFeed} from '#/view/screens/PreferencesFollowingFeed'
-import {PreferencesThreads} from '#/view/screens/PreferencesThreads'
 import {PrivacyPolicyScreen} from '#/view/screens/PrivacyPolicy'
 import {ProfileScreen} from '#/view/screens/Profile'
 import {ProfileFeedScreen} from '#/view/screens/ProfileFeed'
@@ -69,7 +62,6 @@ import {ProfileFollowsScreen} from '#/view/screens/ProfileFollows'
 import {ProfileListScreen} from '#/view/screens/ProfileList'
 import {SavedFeeds} from '#/view/screens/SavedFeeds'
 import {SearchScreen} from '#/view/screens/Search'
-import {SettingsScreen} from '#/view/screens/Settings'
 import {Storybook} from '#/view/screens/Storybook'
 import {SupportScreen} from '#/view/screens/Support'
 import {TermsOfServiceScreen} from '#/view/screens/TermsOfService'
@@ -87,6 +79,7 @@ import {PostRepostedByScreen} from '#/screens/Post/PostRepostedBy'
 import {ProfileKnownFollowersScreen} from '#/screens/Profile/KnownFollowers'
 import {ProfileLabelerLikedByScreen} from '#/screens/Profile/ProfileLabelerLikedBy'
 import {AppearanceSettingsScreen} from '#/screens/Settings/AppearanceSettings'
+import {NotificationSettingsScreen} from '#/screens/Settings/NotificationSettings'
 import {
   StarterPackScreen,
   StarterPackScreenShort,
@@ -95,6 +88,17 @@ import {Wizard} from '#/screens/StarterPack/Wizard'
 import {useTheme} from '#/alf'
 import {router} from '#/routes'
 import {Referrer} from '../modules/expo-bluesky-swiss-army'
+import {AboutSettingsScreen} from './screens/Settings/AboutSettings'
+import {AccessibilitySettingsScreen} from './screens/Settings/AccessibilitySettings'
+import {AccountSettingsScreen} from './screens/Settings/AccountSettings'
+import {AppPasswordsScreen} from './screens/Settings/AppPasswords'
+import {ContentAndMediaSettingsScreen} from './screens/Settings/ContentAndMediaSettings'
+import {ExternalMediaPreferencesScreen} from './screens/Settings/ExternalMediaPreferences'
+import {FollowingFeedPreferencesScreen} from './screens/Settings/FollowingFeedPreferences'
+import {LanguageSettingsScreen} from './screens/Settings/LanguageSettings'
+import {PrivacyAndSecuritySettingsScreen} from './screens/Settings/PrivacyAndSecuritySettings'
+import {SettingsScreen} from './screens/Settings/Settings'
+import {ThreadPreferencesScreen} from './screens/Settings/ThreadPreferences'
 
 const navigationRef = createNavigationContainerRef<AllNavigatorParams>()
 
@@ -281,7 +285,7 @@ function commonScreens(Stack: typeof HomeTab, unreadCountLabel?: string) {
       />
       <Stack.Screen
         name="AppPasswords"
-        getComponent={() => AppPasswords}
+        getComponent={() => AppPasswordsScreen}
         options={{title: title(msg`App Passwords`), requireAuth: true}}
       />
       <Stack.Screen
@@ -291,7 +295,7 @@ function commonScreens(Stack: typeof HomeTab, unreadCountLabel?: string) {
       />
       <Stack.Screen
         name="PreferencesFollowingFeed"
-        getComponent={() => PreferencesFollowingFeed}
+        getComponent={() => FollowingFeedPreferencesScreen}
         options={{
           title: title(msg`Following Feed Preferences`),
           requireAuth: true,
@@ -299,12 +303,12 @@ function commonScreens(Stack: typeof HomeTab, unreadCountLabel?: string) {
       />
       <Stack.Screen
         name="PreferencesThreads"
-        getComponent={() => PreferencesThreads}
+        getComponent={() => ThreadPreferencesScreen}
         options={{title: title(msg`Threads Preferences`), requireAuth: true}}
       />
       <Stack.Screen
         name="PreferencesExternalEmbeds"
-        getComponent={() => PreferencesExternalEmbeds}
+        getComponent={() => ExternalMediaPreferencesScreen}
         options={{
           title: title(msg`External Media Preferences`),
           requireAuth: true,
@@ -322,7 +326,39 @@ function commonScreens(Stack: typeof HomeTab, unreadCountLabel?: string) {
         name="AppearanceSettings"
         getComponent={() => AppearanceSettingsScreen}
         options={{
-          title: title(msg`Appearance Settings`),
+          title: title(msg`Appearance`),
+          requireAuth: true,
+        }}
+      />
+      <Stack.Screen
+        name="AccountSettings"
+        getComponent={() => AccountSettingsScreen}
+        options={{
+          title: title(msg`Account`),
+          requireAuth: true,
+        }}
+      />
+      <Stack.Screen
+        name="PrivacyAndSecuritySettings"
+        getComponent={() => PrivacyAndSecuritySettingsScreen}
+        options={{
+          title: title(msg`Privacy and Security`),
+          requireAuth: true,
+        }}
+      />
+      <Stack.Screen
+        name="ContentAndMediaSettings"
+        getComponent={() => ContentAndMediaSettingsScreen}
+        options={{
+          title: title(msg`Content and Media`),
+          requireAuth: true,
+        }}
+      />
+      <Stack.Screen
+        name="AboutSettings"
+        getComponent={() => AboutSettingsScreen}
+        options={{
+          title: title(msg`About`),
           requireAuth: true,
         }}
       />
@@ -342,8 +378,8 @@ function commonScreens(Stack: typeof HomeTab, unreadCountLabel?: string) {
         options={{title: title(msg`Chat settings`), requireAuth: true}}
       />
       <Stack.Screen
-        name="NotificationsSettings"
-        getComponent={() => NotificationsSettingsScreen}
+        name="NotificationSettings"
+        getComponent={() => NotificationSettingsScreen}
         options={{title: title(msg`Notification settings`), requireAuth: true}}
       />
       <Stack.Screen
@@ -417,7 +453,6 @@ function HomeTabNavigator() {
   return (
     <HomeTab.Navigator
       screenOptions={{
-        animation: isAndroid ? 'ios' : undefined,
         animationDuration: 285,
         gestureEnabled: true,
         fullScreenGestureEnabled: true,
@@ -436,7 +471,6 @@ function SearchTabNavigator() {
   return (
     <SearchTab.Navigator
       screenOptions={{
-        animation: isAndroid ? 'ios' : undefined,
         animationDuration: 285,
         gestureEnabled: true,
         fullScreenGestureEnabled: true,
@@ -454,7 +488,6 @@ function NotificationsTabNavigator() {
   return (
     <NotificationsTab.Navigator
       screenOptions={{
-        animation: isAndroid ? 'ios' : undefined,
         animationDuration: 285,
         gestureEnabled: true,
         fullScreenGestureEnabled: true,
@@ -476,7 +509,6 @@ function MyProfileTabNavigator() {
   return (
     <MyProfileTab.Navigator
       screenOptions={{
-        animation: isAndroid ? 'ios' : undefined,
         animationDuration: 285,
         gestureEnabled: true,
         fullScreenGestureEnabled: true,
@@ -502,7 +534,6 @@ function MessagesTabNavigator() {
   return (
     <MessagesTab.Navigator
       screenOptions={{
-        animation: isAndroid ? 'ios' : undefined,
         animationDuration: 285,
         gestureEnabled: true,
         fullScreenGestureEnabled: true,
@@ -536,7 +567,6 @@ const FlatNavigator = () => {
     <Flat.Navigator
       screenListeners={screenListeners}
       screenOptions={{
-        animation: isAndroid ? 'ios' : undefined,
         animationDuration: 285,
         gestureEnabled: true,
         fullScreenGestureEnabled: true,
@@ -660,7 +690,7 @@ function RoutesContainer({children}: React.PropsWithChildren<{}>) {
       onStateChange={() => {
         const routeName = getCurrentRouteName()
         if (routeName === 'Notifications') {
-          logEvent('router:navigate:notifications:sampled', {})
+          logEvent('router:navigate:notifications', {})
         }
       }}
       onReady={() => {

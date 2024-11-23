@@ -122,9 +122,8 @@ let DrawerProfileCard = ({
 DrawerProfileCard = React.memo(DrawerProfileCard)
 export {DrawerProfileCard}
 
-let DrawerContent = ({}: {}): React.ReactNode => {
+let DrawerContent = ({}: React.PropsWithoutRef<{}>): React.ReactNode => {
   const t = useTheme()
-  const {_} = useLingui()
   const insets = useSafeAreaInsets()
   const setDrawerOpen = useSetDrawerOpen()
   const navigation = useNavigation<NavigationProp>()
@@ -137,7 +136,6 @@ let DrawerContent = ({}: {}): React.ReactNode => {
     isAtMessages,
   } = useNavigationTabState()
   const {hasSession, currentAccount} = useSession()
-  const kawaii = useKawaiiMode()
 
   // events
   // =
@@ -222,7 +220,9 @@ let DrawerContent = ({}: {}): React.ReactNode => {
   // =
 
   return (
-    <View testID="drawer" style={[a.flex_1, t.atoms.bg]}>
+    <View
+      testID="drawer"
+      style={[a.flex_1, a.border_r, t.atoms.bg, t.atoms.border_contrast_low]}>
       <ScrollView
         style={[a.flex_1]}
         contentContainerStyle={[
@@ -275,34 +275,7 @@ let DrawerContent = ({}: {}): React.ReactNode => {
 
         <View style={[a.px_xl]}>
           <Divider style={[a.mb_xl, a.mt_sm]} />
-
-          <View style={[a.flex_col, a.gap_md, a.flex_wrap]}>
-            <InlineLinkText
-              style={[a.text_md]}
-              label={_(msg`Terms of Service`)}
-              to="https://bsky.social/about/support/tos">
-              <Trans>Terms of Service</Trans>
-            </InlineLinkText>
-            <InlineLinkText
-              style={[a.text_md]}
-              to="https://bsky.social/about/support/privacy-policy"
-              label={_(msg`Privacy Policy`)}>
-              <Trans>Privacy Policy</Trans>
-            </InlineLinkText>
-            {kawaii && (
-              <Text style={t.atoms.text_contrast_medium}>
-                <Trans>
-                  Logo by{' '}
-                  <InlineLinkText
-                    style={[a.text_md]}
-                    to="/profile/sawaratsuki.bsky.social"
-                    label="@sawaratsuki.bsky.social">
-                    @sawaratsuki.bsky.social
-                  </InlineLinkText>
-                </Trans>
-              </Text>
-            )}
-          </View>
+          <ExtraLinks />
         </View>
       </ScrollView>
 
@@ -573,6 +546,7 @@ function MenuItem({icon, label, count, bold, onPress}: MenuItemProps) {
           style={[
             a.flex_1,
             a.flex_row,
+            a.align_center,
             a.gap_md,
             a.py_md,
             a.px_xl,
@@ -628,5 +602,41 @@ function MenuItem({icon, label, count, bold, onPress}: MenuItemProps) {
         </View>
       )}
     </Button>
+  )
+}
+
+function ExtraLinks() {
+  const {_} = useLingui()
+  const t = useTheme()
+  const kawaii = useKawaiiMode()
+
+  return (
+    <View style={[a.flex_col, a.gap_md, a.flex_wrap]}>
+      <InlineLinkText
+        style={[a.text_md]}
+        label={_(msg`Terms of Service`)}
+        to="https://bsky.social/about/support/tos">
+        <Trans>Terms of Service</Trans>
+      </InlineLinkText>
+      <InlineLinkText
+        style={[a.text_md]}
+        to="https://bsky.social/about/support/privacy-policy"
+        label={_(msg`Privacy Policy`)}>
+        <Trans>Privacy Policy</Trans>
+      </InlineLinkText>
+      {kawaii && (
+        <Text style={t.atoms.text_contrast_medium}>
+          <Trans>
+            Logo by{' '}
+            <InlineLinkText
+              style={[a.text_md]}
+              to="/profile/sawaratsuki.bsky.social"
+              label="@sawaratsuki.bsky.social">
+              @sawaratsuki.bsky.social
+            </InlineLinkText>
+          </Trans>
+        </Text>
+      )}
+    </View>
   )
 }

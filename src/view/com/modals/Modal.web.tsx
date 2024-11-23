@@ -1,4 +1,3 @@
-import React from 'react'
 import {StyleSheet, TouchableWithoutFeedback, View} from 'react-native'
 import Animated, {FadeIn, FadeOut} from 'react-native-reanimated'
 
@@ -7,13 +6,12 @@ import {useWebBodyScrollLock} from '#/lib/hooks/useWebBodyScrollLock'
 import {useWebMediaQueries} from '#/lib/hooks/useWebMediaQueries'
 import type {Modal as ModalIface} from '#/state/modals'
 import {useModalControls, useModals} from '#/state/modals'
-import * as AddAppPassword from './AddAppPasswords'
 import * as ChangeEmailModal from './ChangeEmail'
-import * as ChangeHandleModal from './ChangeHandle'
 import * as ChangePasswordModal from './ChangePassword'
 import * as CreateOrEditListModal from './CreateOrEditList'
 import * as CropImageModal from './CropImage.web'
 import * as DeleteAccountModal from './DeleteAccount'
+import * as EditProfileModal from './EditProfile'
 import * as InviteCodesModal from './InviteCodes'
 import * as ContentLanguagesSettingsModal from './lang-settings/ContentLanguagesSettings'
 import * as PostLanguagesSettingsModal from './lang-settings/PostLanguagesSettings'
@@ -61,7 +59,9 @@ function Modal({modal}: {modal: ModalIface}) {
   }
 
   let element
-  if (modal.name === 'create-or-edit-list') {
+  if (modal.name === 'edit-profile') {
+    element = <EditProfileModal.Component {...modal} />
+  } else if (modal.name === 'create-or-edit-list') {
     element = <CreateOrEditListModal.Component {...modal} />
   } else if (modal.name === 'user-add-remove-lists') {
     element = <UserAddRemoveLists.Component {...modal} />
@@ -71,12 +71,8 @@ function Modal({modal}: {modal: ModalIface}) {
     element = <CropImageModal.Component {...modal} />
   } else if (modal.name === 'delete-account') {
     element = <DeleteAccountModal.Component />
-  } else if (modal.name === 'change-handle') {
-    element = <ChangeHandleModal.Component {...modal} />
   } else if (modal.name === 'invite-codes') {
     element = <InviteCodesModal.Component />
-  } else if (modal.name === 'add-app-password') {
-    element = <AddAppPassword.Component />
   } else if (modal.name === 'content-languages-settings') {
     element = <ContentLanguagesSettingsModal.Component />
   } else if (modal.name === 'post-languages-settings') {

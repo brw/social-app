@@ -1,4 +1,4 @@
-import React, {useState} from 'react'
+import {useState} from 'react'
 import {TouchableOpacity, View} from 'react-native'
 import {msg, Trans} from '@lingui/macro'
 import {useLingui} from '@lingui/react'
@@ -79,7 +79,7 @@ export function GifAltTextDialogLoaded({
         onPress={control.open}
         style={[
           a.absolute,
-          {top: 20, left: 12},
+          {top: 8, left: 8},
           {borderRadius: 6},
           a.pl_xs,
           a.pr_sm,
